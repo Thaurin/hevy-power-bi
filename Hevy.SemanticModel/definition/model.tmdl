@@ -1,0 +1,24 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: nl-NL
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Workouts","DataFolder"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Workouts
+ref table DateTableTemplate_7db8c3d3-824c-4514-8c07-1ccf56467187
+ref table LocalDateTable_991e671a-1c55-465a-9f85-d77e611b3f8e
+ref table LocalDateTable_3cd6e772-1fb7-4744-bf32-c68fc7f1edaf
+ref table y-axis-values
+ref table Dates
+ref table LocalDateTable_91fca3a6-ca4e-4428-9fd1-4cfe0f11ecbd
+
+ref cultureInfo en-US
+

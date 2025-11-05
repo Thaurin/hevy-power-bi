@@ -1,0 +1,51 @@
+table y-axis-values
+	isHidden
+	lineageTag: 94acea38-185c-43d0-b747-bbc98af01a28
+
+	column y-axis-values
+		isHidden
+		lineageTag: fc64a90d-78d2-43bc-ba96-a49932dc2115
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'y-axis-values Order'
+
+		relatedColumnDetails
+			groupByColumn: 'y-axis-values Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'y-axis-values Fields'
+		isHidden
+		lineageTag: 71e115e7-f1fd-4678-a075-6b7bef632075
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'y-axis-values Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'y-axis-values Order'
+		isHidden
+		formatString: 0
+		lineageTag: 61bfae9c-8d5e-4f1f-b1af-21df3110cba5
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition y-axis-values = calculated
+		mode: import
+		source =
+				{
+				    ("Weight", NAMEOF('Workouts'[TotalWeightOfSet]), 0),
+				    ("Duration", NAMEOF('Workouts'[TotalWorkoutDuration]), 1),
+				    ("Reps", NAMEOF('Workouts'[TotalReps]), 2)
+				}
+
+	annotation PBI_Id = ebdaa56a60434e07b96bb6f7bf91cd0f
+

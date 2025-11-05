@@ -1,0 +1,148 @@
+table Workouts
+	lineageTag: 6c26f411-f663-45b1-952a-dd9bbab44871
+
+	measure TotalWeightOfSet = SUMX(Workouts, Workouts[weight_kg] * Workouts[reps])
+		lineageTag: ebac9e02-19de-4f5b-81b8-91d95e3a21b6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure TotalReps = SUM(Workouts[reps])
+		formatString: 0
+		lineageTag: f796829c-cf82-47c6-8848-469558879a8c
+
+	measure TotalWorkoutDuration = ```
+			
+			SUMX(
+			    VALUES(Workouts[start_time]),  -- Get distinct workouts by start_time
+			    CALCULATE(
+			        DATEDIFF(
+			            FIRSTNONBLANK(Workouts[start_time], 1), 
+			            FIRSTNONBLANK(Workouts[end_time], 1),
+			            MINUTE
+			        ),
+			        FILTER(
+			            Workouts,
+			            Workouts[start_time] = EARLIER(Workouts[start_time])  -- Filter by workout by start_time
+			        )
+			    )
+			)
+			
+			```
+		formatString: 0
+		lineageTag: f514f0c1-8ae4-4bc4-a2f6-f67e44f9c76b
+
+	column title
+		dataType: string
+		lineageTag: a800e7f3-d9a7-4aa8-8e3d-b709d5774559
+		summarizeBy: none
+		sourceColumn: title
+
+		annotation SummarizationSetBy = Automatic
+
+	column start_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: db778a03-66f5-4c0d-8fa8-2b53ce833fd6
+		summarizeBy: none
+		sourceColumn: start_time
+
+		variation Variation
+			isDefault
+			relationship: f56a3d96-0c76-486b-8b79-a86388b9f7be
+			defaultHierarchy: LocalDateTable_991e671a-1c55-465a-9f85-d77e611b3f8e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column end_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 5d679115-251b-4a45-85e8-c3875afe57df
+		summarizeBy: none
+		sourceColumn: end_time
+
+		variation Variation
+			isDefault
+			relationship: 7ce491d7-86c7-4f4c-80f2-a519ba152ca7
+			defaultHierarchy: LocalDateTable_3cd6e772-1fb7-4744-bf32-c68fc7f1edaf.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column exercise_title
+		dataType: string
+		lineageTag: 9973ea35-8d07-4e49-9de8-00e69909a106
+		summarizeBy: none
+		sourceColumn: exercise_title
+
+		annotation SummarizationSetBy = Automatic
+
+	column set_index
+		dataType: int64
+		formatString: 0
+		lineageTag: c0d2a3ec-e006-4033-9936-9ee823b68d73
+		summarizeBy: sum
+		sourceColumn: set_index
+
+		annotation SummarizationSetBy = Automatic
+
+	column set_type
+		dataType: string
+		lineageTag: b50aec69-5ded-4676-9631-3f142d3e3f60
+		summarizeBy: none
+		sourceColumn: set_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column weight_kg
+		dataType: double
+		lineageTag: 09c0defb-eeb2-4450-8320-0dad57300d98
+		summarizeBy: sum
+		sourceColumn: weight_kg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column reps
+		dataType: int64
+		formatString: 0
+		lineageTag: 2fb69aa8-3da8-4b26-8561-2b38e0192ea8
+		summarizeBy: sum
+		sourceColumn: reps
+
+		annotation SummarizationSetBy = Automatic
+
+	column total_weight_kg = [weight_kg]*[reps]
+		lineageTag: c1ae7f1c-71ca-41d1-a9af-d3063e2ef2d1
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Date = DATEVALUE('Workouts'[start_time])
+		formatString: Long Date
+		lineageTag: 2f653759-2baa-42c4-a23f-cc9d2cb42b94
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Workouts = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "\workouts.csv"),[Delimiter=",", Columns=14, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Promoted Headers", {{"weight_kg", type number}}, "en-US"),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type with Locale",{"description", "superset_id", "exercise_notes", "distance_km", "duration_seconds", "rpe"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Removed Columns",{{"start_time", type datetime}, {"end_time", type datetime}, {"set_index", Int64.Type}, {"reps", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

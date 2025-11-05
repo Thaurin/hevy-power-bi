@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Hevy"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "752a75e5-1aeb-44f3-bad1-e90f0adc75fb"
+  }
+}

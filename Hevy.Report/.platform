@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Hevy"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "31d28417-58c7-4a9c-a4d1-54c8c78ca6a3"
+  }
+}

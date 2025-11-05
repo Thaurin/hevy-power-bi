@@ -1,0 +1,19 @@
+relationship f56a3d96-0c76-486b-8b79-a86388b9f7be
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Workouts.start_time
+	toColumn: LocalDateTable_991e671a-1c55-465a-9f85-d77e611b3f8e.Date
+
+relationship 7ce491d7-86c7-4f4c-80f2-a519ba152ca7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Workouts.end_time
+	toColumn: LocalDateTable_3cd6e772-1fb7-4744-bf32-c68fc7f1edaf.Date
+
+relationship bbedf0ce-bf55-4fd2-a457-cbe25a2f55fa
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Dates.Date
+	toColumn: LocalDateTable_91fca3a6-ca4e-4428-9fd1-4cfe0f11ecbd.Date
+
+relationship e1b72b73-2594-70bf-c476-3212eaa09b6e
+	fromColumn: Workouts.Date
+	toColumn: Dates.Date
+

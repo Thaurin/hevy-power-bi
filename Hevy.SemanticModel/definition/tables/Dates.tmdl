@@ -1,0 +1,106 @@
+table Dates
+	lineageTag: 0ef7b5d4-3898-4ee4-808c-5d21f48a8814
+
+	measure MinDate = CALCULATE(MIN('Workouts'[start_time]), ALL('Workouts'))
+		formatString: General Date
+		lineageTag: f0067be7-a7d6-48d5-bfef-5610a13e4178
+
+	measure MaxDate = CALCULATE(MAX('Workouts'[start_time]), ALL('Workouts'))
+		formatString: General Date
+		lineageTag: 55f880ac-86f0-4d67-8ca6-1b95c3643982
+
+	column Date
+		formatString: Long Date
+		lineageTag: b86fa0bf-61f2-4330-91aa-2f1419c016cf
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: bbedf0ce-bf55-4fd2-a457-cbe25a2f55fa
+			defaultHierarchy: LocalDateTable_91fca3a6-ca4e-4428-9fd1-4cfe0f11ecbd.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		formatString: 0
+		lineageTag: 1589068d-41d9-475a-82d7-486f8edb7305
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeekNumber
+		formatString: 0
+		lineageTag: 9b92068f-0a98-41e0-8688-31ced6dc1f94
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [WeekNumber]
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeekRange = ```
+			
+			Dates[WeekNumber] & ", " &
+			FORMAT(Dates[Date] - WEEKDAY(Dates[Date], 2) + 1, "dd-mm-yyyy") &
+			" t/m " & FORMAT(Dates[Date] - WEEKDAY(Dates[Date], 2) + 7, "dd-mm-yyyy")
+			
+			```
+		lineageTag: a450037c-b4d1-4627-9ce0-14de8f64763a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearWeek
+		lineageTag: 88d5e4dc-497d-4ef3-bb02-28daf7d74201
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [YearWeek]
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonth
+		lineageTag: b268ee82-f53e-47fd-885c-29fc046ac2a1
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [YearMonth]
+		sortByColumn: YearMonthSort
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearWeekSort = YEAR(Dates[Date]) * 100 + WEEKNUM(Dates[Date])
+		formatString: 0
+		lineageTag: 123816de-5ece-4af7-b4b3-ca5f28fa76d9
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearMonthSort = YEAR(Dates[Date]) * 100 + MONTH(Dates[Date])
+		formatString: 0
+		lineageTag: 06004da3-55c8-4398-8018-295adc52f56d
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dates = calculated
+		mode: import
+		source =
+				
+				VAR MinDate = CALCULATE(MIN('Workouts'[start_time]), ALL('Workouts'))
+				VAR MaxDate = CALCULATE(MAX('Workouts'[start_time]), ALL('Workouts'))
+				RETURN
+				ADDCOLUMNS(
+				    CALENDAR(MinDate, MaxDate),  -- Adjust range as needed
+				    "Year", YEAR([Date]),
+				    "WeekNumber", WEEKNUM([Date], 2),
+				    "YearWeek", YEAR([Date]) & "-" & WEEKNUM([Date], 2),
+				    "YearMonth", YEAR([Date]) & "-" & FORMAT([Date], "MMMM")
+				
+				)
+
+	annotation PBI_Id = c4c63305e77848bba33fd8d4ef483c12
+
